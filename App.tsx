@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { PaperProvider, useTheme } from 'react-native-paper';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {RouteStackParamList} from "./routes/routePage";
+
+import routes from "./routes/routeList";
+
+import Home from './pages/Home';
+import UserDetail from './pages/UserDetail';
+
+function App() { 
+    const Stack = createNativeStackNavigator<RouteStackParamList>();
+    const theme = useTheme();
+
+    return (
+      <Stack.Navigator 
+        initialRouteName={routes.home}
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: theme.colors.background,
+          }
+        }}  
+      >
+        <Stack.Screen name={routes.home} component={Home} />
+        <Stack.Screen name={routes.email} component={UserDetail} />
+      </Stack.Navigator>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function BaseApp() {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <PaperProvider>
+          <App />
+        </PaperProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
+}
